@@ -12,9 +12,9 @@ def display_instructions():
     print("1. Explore 10 ancient locations by choosing door A, B, or C.")
     print("2. Read clues carefully to deduce which door holds the treasure.")
     print("3. Wrong doors trigger dangerous traps that deal 1 Damage (Cost 1 Life).")
-    print("4. You start with 4 Lives (❤️ ❤️ ❤️ ❤️ ). Max life capacity is 4.")
+    print("4. You start with 4 Lives (❤️ ❤️ ❤️ ❤️  ). Max life capacity is 4.")
     print("5. Finding a treasure room gives a chance to discover a Life Potion (+1 Life instantly).")
-    print("6. Some locations require specific tools (Torches, Keys, Pickaxes, Crystals).")
+    print("6. Some locations randomly require specific tools (Torches, Keys, Pickaxes).")
     print("7. Dungeon levels are randomized every time you play.")
     print("8. Collect at least 6 treasures to conquer the temple!\n")
 
@@ -33,7 +33,7 @@ def choose_room(location_data, player_tools, collected_treasures, hazard_traps, 
     print(f"\n---> Location: {room_name}")
     print(f"Clue: \"{clue}\"")
 
-    # Display inventory status if a lock requires an item
+    # Display inventory status ONLY if this specific room happened to roll a tool requirement
     if required_tool != "None":
         print(f"\n[!] LOCK WARNING: Opening the chest here requires a [{required_tool}].")
         print("--- YOUR CURRENT EQUIPMENT & INVENTORY ---")
@@ -56,13 +56,13 @@ def choose_room(location_data, player_tools, collected_treasures, hazard_traps, 
     if choice == correct:
         if required_tool != "None" and required_tool not in player_tools:
             print(f"\nYou found the treasure chest, but you lack the [{required_tool}] to unlock it!")
-            return None, False  # (Treasure, Found Life Potion)
+            return None, False
 
         print(f"\nSUCCESS! You unlocked the secret path and found: [{treasure}]!")
         
-        # FEATURE: Chance to find a Life Potion in correct rooms
+        # Chance to find a Life Potion
         potion_found = False
-        if random.random() < 0.15:  # 15% chance to find a Life Potion
+        if random.random() < 0.15:  # 15% chance
             potion_found = True
             print("\n🧪 BONUS DISCOVERY! You found an Ancient Life Potion beside the chest!")
             if current_lives < 4:
@@ -86,10 +86,8 @@ def view_inventory(inventory, tools):
     print(f"Tools ({len(tools)}): {tools}")
 
     if inventory:
-        # Requirement: Search operation on list
         search_query = input("\nEnter treasure name to search: ").strip().title()
         if search_query in inventory:
-            # Requirement: Indexing operation on list
             idx = inventory.index(search_query)
             print(f"-> Found '{search_query}' at backpack index {idx}.")
         else:
@@ -110,7 +108,6 @@ def manage_backpack(inventory):
     if choice.isdigit():
         idx = int(choice) - 1
         if 0 <= idx < len(inventory):
-            # Requirement: List pop() operation
             removed = inventory.pop(idx)
             print(f"You discarded [{removed}] from your backpack.")
         else:
@@ -118,10 +115,7 @@ def manage_backpack(inventory):
 
 
 def sort_inventory_menu(inventory):
-    """
-    Dedicated Inventory Sorter Feature.
-    Uses list.sort() to organize items dynamically.
-    """
+    """Dedicated Inventory Sorter Feature."""
     if not inventory:
         print("\nYour backpack is empty. Nothing to sort.")
         return
@@ -135,7 +129,6 @@ def sort_inventory_menu(inventory):
     choice = input("Choose sorting method (1-3): ").strip()
 
     if choice == "1":
-        # Requirement: sort() operation
         inventory.sort()
         print("\n[SUCCESS] Treasures sorted Alphabetically (A-Z)!")
     elif choice == "2":
@@ -156,18 +149,12 @@ def play_game():
     display_instructions()
 
     # ----------------------------------------------------
-    # MANDATORY LIST DEFINITIONS (Requirement 1 & 2)
+    # MANDATORY LIST DEFINITIONS
     # ----------------------------------------------------
-    # List 1: Collected Treasures Inventory
     collected_treasures = []
-
-    # List 2: Equipment Tools
     player_tools = ["Basic Torch"]
-
-    # List 3: Expedition History Log
     expedition_history = []
 
-    # List 4: Random Hazard Traps
     hazard_traps = [
         "Poison Dart Trap fired from the stone wall",
         "Floor crumbled into a Spike Pit",
@@ -176,35 +163,45 @@ def play_game():
         "Corrosive Acid Cloud filled the room"
     ]
 
-    # List 5 (Nested List): Master list of 10 Levels
-    # Format: [Location, Clue, Correct Door, Treasure, Required Tool]
-    master_locations = [
-        ["Sunken Grotto", "Where light reflects brightest on water", "A", "Golden Key", "None"],
-        ["Whispering Crypt", "Listen closely to the middle shadow", "B", "Ruby Serpent", "Basic Torch"],
-        ["Forgotten Vault", "The rightmost path shields ancient royalty", "C", "Ancient Crown", "Golden Key"],
-        ["Dragon Peak", "High above, only the left ledge holds peril", "A", "Iron Pickaxe", "None"],
-        ["Emerald Catacombs", "The middle archway smells of ancient moss", "B", "Emerald Scarab", "None"],
-        ["Subterranean Lake", "Choose the rightmost tunnel where water drops sound closest", "C", "Golden Trident", "Iron Pickaxe"],
-        ["Obsidian Mine", "Darkness covers the left wall, break through it", "A", "Diamond Gem", "Iron Pickaxe"],
-        ["Chamber of Echoes", "The middle pillar vibrates with old magic", "B", "Silver Compass", "None"],
-        ["Celestial Shrine", "The right altar points directly to the North Star", "C", "Sun Crystal", "Golden Key"],
-        ["Forbidden Core", "The left door burns with ancient dragon fire", "A", "Heart of Gold", "Sun Crystal"]
+    possible_tools = ["Golden Key", "Iron Pickaxe", "Sun Crystal"]
+
+    # Base list of 10 rooms (Cleaned defaults without forced tool locks)
+    base_locations = [
+        ["Sunken Grotto", "Where light reflects brightest on water", "A", "Golden Key"],
+        ["Whispering Crypt", "Listen closely to the middle shadow", "B", "Ruby Serpent"],
+        ["Forgotten Vault", "The rightmost path shields ancient royalty", "C", "Ancient Crown"],
+        ["Dragon Peak", "High above, only the left ledge holds peril", "A", "Iron Pickaxe"],
+        ["Emerald Catacombs", "The middle archway smells of ancient moss", "B", "Emerald Scarab"],
+        ["Subterranean Lake", "Choose the rightmost tunnel where water drops sound closest", "C", "Golden Trident"],
+        ["Obsidian Mine", "Darkness covers the left wall, break through it", "A", "Diamond Gem"],
+        ["Chamber of Echoes", "The middle pillar vibrates with old magic", "B", "Silver Compass"],
+        ["Celestial Shrine", "The right altar points directly to the North Star", "C", "Sun Crystal"],
+        ["Forbidden Core", "The left door burns with ancient dragon fire", "A", "Heart of Gold"]
     ]
 
-    # Feature: Randomize level order for every new play-through
-    locations = master_locations.copy()
+    # Generate room data and randomly assign tool requirements (30% chance per level)
+    locations = []
+    for loc in base_locations:
+        # 30% chance for a room to require an item
+        if random.random() < 0.30:
+            req_tool = random.choice(possible_tools)
+        else:
+            req_tool = "None"
+
+        # Construct location record: [Name, Clue, Door, Treasure, Required Tool]
+        locations.append([loc[0], loc[1], loc[2], loc[3], req_tool])
+
+    # Shuffle level sequence
     random.shuffle(locations)
 
     lives = 4
     max_lives = 4
     current_round = 0
 
-    # Main gameplay loop across 10 levels
     while lives > 0 and current_round < len(locations):
         print(f"\n==================== LEVEL {current_round + 1} OF 10 ====================")
         print(f"Explorer: {explorer} | Lives: {'❤️ ' * lives} ({lives}/{max_lives})")
 
-        # Indexing nested list
         current_location = locations[current_round]
 
         print("\nActions:")
@@ -217,16 +214,13 @@ def play_game():
         if action == "1":
             result, potion_found = choose_room(current_location, player_tools, collected_treasures, hazard_traps, lives)
 
-            # Handle Life Potion heal with max cap of 4
             if potion_found:
                 lives = min(max_lives, lives + 1)
 
             if result:
-                # List append() operation
                 collected_treasures.append(result)
                 expedition_history.append(f"Level {current_round + 1} ({current_location[0]}): Found {result}")
 
-                # Automatically add progression tools to equipment
                 if any(tool_word in result for tool_word in ["Key", "Torch", "Pickaxe", "Crystal"]):
                     if result not in player_tools:
                         player_tools.append(result)
@@ -255,7 +249,7 @@ def play_game():
     # ----------------------------------------------------
     print("\n" + "=" * 60)
     print("               EXPEDITION SUMMARY              ")
-    print("=" * 55)
+    print("=" * 60)
 
     if lives <= 0:
         print(f"☠️ GAME OVER! {explorer} ran out of lives and collapsed in the dungeon.")
@@ -264,11 +258,9 @@ def play_game():
     else:
         print(f"GAME OVER! {explorer}, you collected {len(collected_treasures)}/10 treasures. You needed at least 6 to conquer the temple.")
 
-    # List sort() / sorted() operation
     print("\nTreasures Collected (Alphabetical Order):")
     sorted_items = sorted(collected_treasures)
 
-    # List traversal with loop
     for item in sorted_items:
         print(f" - {item}")
 
