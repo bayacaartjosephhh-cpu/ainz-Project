@@ -8,15 +8,14 @@ def display_title():
 
 
 def display_instructions():
-    print("\n--- INSTRUCTIONS ---")
+    print("\n                   --- INSTRUCTIONS ---")
     print("1. Explore 10 ancient locations by choosing door A, B, or C.")
     print("2. Read clues carefully to deduce which door holds the treasure.")
-    print("3. Wrong doors trigger dangerous traps that deal 1 Damage (Cost 1 Life).")
-    print("4. You start with 4 Lives (❤️ ❤️ ❤️ ❤️  ). Max life capacity is 4.")
-    print("5. Finding a treasure room gives a chance to discover a Life Potion (+1 Life instantly).")
-    print("6. Some locations randomly require specific tools (Torches, Keys, Pickaxes).")
-    print("7. Dungeon levels are randomized every time you play.")
-    print("8. Collect at least 6 treasures to conquer the temple!\n")
+    print("3. Wrong doors trigger dangerous traps that deal 1 Damage.")
+    print("4. You start with 4 Lives. Max life capacity is 4.")
+    print("5. Finding a treasure room gives a chance to discover a Life Potion.")
+    print("6. Some locations randomly require specific tools.")
+    print("7. Collect at least 6 treasures to conquer the temple!\n")
 
 
 def choose_room(location_data, player_tools, collected_treasures, hazard_traps, current_lives):
@@ -86,7 +85,10 @@ def view_inventory(inventory, tools):
     print(f"Tools ({len(tools)}): {tools}")
 
     if inventory:
-        search_query = input("\nEnter treasure name to search: ").strip().title()
+        search_query = input("\nEnter treasure name to search (or enter '0' to go back): ").strip().title()
+        if search_query == "0":
+            print("Exiting backpack view...")
+            return
         if search_query in inventory:
             idx = inventory.index(search_query)
             print(f"-> Found '{search_query}' at backpack index {idx}.")
@@ -104,7 +106,11 @@ def manage_backpack(inventory):
     for i, item in enumerate(inventory):
         print(f"{i + 1}. {item}")
 
-    choice = input("Enter item number to drop (or press Enter to cancel): ").strip()
+    choice = input("Enter item number to drop (or press '0' or Enter to go back): ").strip()
+    if choice == "0" or choice == "":
+        print("Exiting backpack menu...")
+        return
+
     if choice.isdigit():
         idx = int(choice) - 1
         if 0 <= idx < len(inventory):
@@ -208,8 +214,7 @@ def play_game():
         print("1. Explore Location")
         print("2. Check Backpack & Search Items")
         print("3. Drop an Item (pop)")
-        print("4. Open Inventory Sorter (sort)")
-        action = input("Select an action (1-4): ").strip()
+        action = input("Select an action (1-3): ").strip()
 
         if action == "1":
             result, potion_found = choose_room(current_location, player_tools, collected_treasures, hazard_traps, lives)
@@ -238,11 +243,8 @@ def play_game():
         elif action == "3":
             manage_backpack(collected_treasures)
 
-        elif action == "4":
-            sort_inventory_menu(collected_treasures)
-
         else:
-            print("Invalid option. Please choose 1, 2, 3, or 4.")
+            print("Invalid option. Please choose 1, 2, or 3.")
 
     # ----------------------------------------------------
     # GAME OVER & SUMMARY
