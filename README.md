@@ -2,6 +2,9 @@
 
 Course Project: Data Structures and Algorithms (Prelim Project)  
 Group: Group 5  
+Members:
+1. Art Joseph Bayaca
+2. Christian Joe Nob
 
 ---
 
@@ -38,6 +41,19 @@ Loop Traversal = Iterates through sorted lists to render end-of-game expedition 
 3. Life Potions: 15% random drop chance upon entering correct rooms, automatically restoring +1 Life (capped at max 4).
 4. Tool Requirement Checks: Some rooms dynamically roll tool requirements (Golden Key, Iron Pickaxe, Sun Crystal) that inspect your inventory before allowing access.
 5. Backpack & Equipment Management: Dedicated options to view, search, and drop items dynamically with exit/cancel options.
+
+---
+
+🚀 How to Run the Game
+
+Prerequisites
+Python 3.x installed on your system.
+
+Steps:
+1. Clone or download this repository.
+2. Open your terminal/command prompt and navigate to the project folder:
+   ```bash
+   cd path/to/project
 
 ---
 
